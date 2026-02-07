@@ -1,41 +1,44 @@
-# 极致美学QYWeb示例
+# 全面语法测试QYWeb文件
 container:
     header:
-        title: QYWeb 极致美学演示
-        content: 极简语法 · 极致呈现 · 全端适配
-    card:
-        title: 品牌视觉展示
-        content: 融合现代设计美学的极简标记语言，用最少的代码实现最高级的视觉效果
-        img[https://picsum.photos/1200/600?grayscale=1&blur=1]: 品牌背景
-        link[https://qyweb.design]: 访问官方文档
-    card:
-        title: 核心特性
-        content: 以下是QYWeb的核心优势，兼顾开发效率与视觉体验
-        table:
-            tr:
-                td: 极简语法
-                td: 无需闭合标签，缩进式层级
-                td: ✅
-            tr:
-                td: 自动渲染
-                td: 浏览器端实时解析
-                td: ✅
-            tr:
-                td: 响应式布局
-                td: 适配所有设备尺寸
-                td: ✅
-            tr:
-                td: 原生交互
-                td: 支持按钮、输入框等交互元素
-                td: ✅
-    card:
-        title: 交互体验区
-        content: 体验QYWeb原生支持的交互组件，视觉与功能兼具
-        input[text,username]: 请输入您的姓名
-        input[email,email]: 请输入您的邮箱
-        btn: 提交体验申请
-        link[https://github.com/qyweb]: 查看开源代码
-    empty:
+        h1: QYWeb 全语法测试
+        nav:
+            link[href=/home]: 首页
+            link[href=/docs]: 文档
+            link[href=/demo]: 示例
+    main:
+        section:
+            h2: 基础文本标签
+            p: 这是段落文本
+            text: 这是普通文本
+            h3: 三级标题
+            h4: 四级标题
+            ul:
+                li: 无序列表项1
+                li: 无序列表项2
+            ol:
+                li: 有序列表项1
+                li: 有序列表项2
+        section:
+            h2: 媒体与链接
+            img[src=https://picsum.photos/800/400;alt=测试图片;class=banner]: 
+            link[href=https://qyweb.design;target=_blank]: 打开QYWeb官网
+        section:
+            h2: 表单组件
+            form[method=POST;action=/submit]:
+                label: 用户名：
+                input[text;username]: 请输入用户名
+                label: 密码：
+                input[password;password]: 请输入密码
+                label: 性别：
+                select[name=gender]:
+                    option[value=male]: 男
+                    option[value=female]: 女
+                label: 备注：
+                textarea[name=remark]: 请输入备注信息
+                btn[class=primary;id=submit]: 提交表单
+        aside:
+            h3: 侧边栏
+            content: 这是侧边栏内容，自适应布局
     footer:
-        content: © 2026 QYWeb 极简标记语言 · 保留所有权利
-        text: 设计原则：极简、优雅、高效
+        content: © 2026 QYWeb 全语法测试 · 所有标签均已支持

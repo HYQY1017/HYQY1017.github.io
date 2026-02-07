@@ -1,5 +1,4 @@
 <!-- 欢迎访问 www.何逸钦远.space 网站! -->
-<!-- GitHub: github.com/HYQY2012/hyqy2012.github.io/ -->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -14,7 +13,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
-  <!-- 新增：Markdown语言高亮组件 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markdown.min.js"></script>
   <script>
     tailwind.config = {
@@ -236,3 +234,5 @@
         const res = await fetch(`https://api.github.com/users/${username}/repos?per_page=20`);
         if (!res.ok) throw new Error('加载仓库失败');
         const data = await res.json();
+        currentSearchType = 'repo';
+        searchUser.c

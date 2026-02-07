@@ -1,0 +1,41 @@
+# 极致美学QYWeb示例
+container:
+    header:
+        title: QYWeb 极致美学演示
+        content: 极简语法 · 极致呈现 · 全端适配
+    card:
+        title: 品牌视觉展示
+        content: 融合现代设计美学的极简标记语言，用最少的代码实现最高级的视觉效果
+        img[https://picsum.photos/1200/600?grayscale=1&blur=1]: 品牌背景
+        link[https://qyweb.design]: 访问官方文档
+    card:
+        title: 核心特性
+        content: 以下是QYWeb的核心优势，兼顾开发效率与视觉体验
+        table:
+            tr:
+                td: 极简语法
+                td: 无需闭合标签，缩进式层级
+                td: ✅
+            tr:
+                td: 自动渲染
+                td: 浏览器端实时解析
+                td: ✅
+            tr:
+                td: 响应式布局
+                td: 适配所有设备尺寸
+                td: ✅
+            tr:
+                td: 原生交互
+                td: 支持按钮、输入框等交互元素
+                td: ✅
+    card:
+        title: 交互体验区
+        content: 体验QYWeb原生支持的交互组件，视觉与功能兼具
+        input[text,username]: 请输入您的姓名
+        input[email,email]: 请输入您的邮箱
+        btn: 提交体验申请
+        link[https://github.com/qyweb]: 查看开源代码
+    empty:
+    footer:
+        content: © 2026 QYWeb 极简标记语言 · 保留所有权利
+        text: 设计原则：极简、优雅、高效

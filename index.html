@@ -15,11 +15,10 @@
         body {
             background: linear-gradient(135deg, #ffe6f2 0%, #f8d7e8 100%);
             min-height: 100vh;
-            overflow: hidden; /* 隐藏滚动条 */
+            overflow: hidden;
             position: relative;
         }
 
-        /* 标题样式 */
         .game-title {
             position: fixed;
             top: 20px;
@@ -32,7 +31,6 @@
             text-align: center;
         }
 
-        /* 头像样式 - 固定位置 */
         .avatar-container {
             position: fixed;
             top: 100px;
@@ -54,7 +52,6 @@
             object-fit: cover;
         }
 
-        /* 漂浮词汇通用样式 */
         .floating-word {
             position: absolute;
             padding: 10px 20px;
@@ -63,27 +60,24 @@
             font-weight: bold;
             cursor: pointer;
             user-select: none;
-            opacity: 0;
             pointer-events: auto;
             z-index: 50;
             transition: all 0.2s ease;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             animation: floatRandom 8s linear infinite;
+            opacity: 1;
         }
 
-        /* 正面词汇样式 */
         .floating-word.positive {
             background: #ff6699;
             color: white;
         }
 
-        /* 负面词汇样式 */
         .floating-word.negative {
             background: #999999;
             color: white;
         }
 
-        /* 词汇漂浮动画 - 随机轨迹 */
         @keyframes floatRandom {
             0% {
                 transform: translate(0, 0) rotate(0deg);
@@ -104,7 +98,6 @@
             }
         }
 
-        /* 爱心特效样式 */
         .heart {
             position: absolute;
             width: 30px;
@@ -117,7 +110,6 @@
             z-index: 60;
         }
 
-        /* 惩罚特效样式 */
         .punish {
             position: absolute;
             width: 80px;
@@ -131,7 +123,6 @@
             z-index: 60;
         }
 
-        /* 惩罚文字提示 */
         .punish-text {
             position: absolute;
             color: #ff0000;
@@ -144,7 +135,6 @@
             z-index: 60;
         }
 
-        /* 头像震动动画 */
         @keyframes avatarShake {
             0% { transform: translateX(-50%) rotate(0deg); }
             20% { transform: translateX(-53%) rotate(-5deg); }
@@ -154,7 +144,6 @@
             100% { transform: translateX(-50%) rotate(0deg); }
         }
 
-        /* 爱心爆炸动画 */
         @keyframes heartBurst {
             0% {
                 opacity: 1;
@@ -170,7 +159,6 @@
             }
         }
 
-        /* 惩罚爆炸动画 */
         @keyframes punishBurst {
             0% {
                 opacity: 1;
@@ -186,7 +174,6 @@
             }
         }
 
-        /* 惩罚文字动画 */
         @keyframes punishText {
             0% {
                 opacity: 1;
@@ -202,7 +189,6 @@
             }
         }
 
-        /* 响应式设计 */
         @media (max-width: 768px) {
             .game-title {
                 font-size: 24px;
@@ -227,16 +213,13 @@
     </style>
 </head>
 <body>
-    <!-- 游戏标题 -->
     <h1 class="game-title">和欢欢一起玩游戏吧 ❤️</h1>
     
-    <!-- 头像容器 -->
     <div class="avatar-container" id="avatarContainer">
-        <img src="huan.png" alt="欢欢" class="avatar" id="avatar">
+        <img src="https://www.cmh.he.cn/huan.png" alt="欢欢" class="avatar" id="avatar">
     </div>
 
     <script>
-        // 词汇库
         const wordLibrary = {
             positive: [
                 "真漂亮", "超可爱", "好聪明", "最棒了", "笑起来真甜",
@@ -249,56 +232,45 @@
             ]
         };
 
-        // 配置参数
         const CONFIG = {
-            totalWords: 20,          // 同时漂浮的词汇总数
-            spawnInterval: 2000,     // 新词汇生成间隔
-            wordLifetime: 8000,      // 词汇存活时间
-            heartCount: 15           // 点击正面词汇生成的爱心数量
+            totalWords: 20,
+            spawnInterval: 2000,
+            wordLifetime: 8000,
+            heartCount: 15
         };
 
-        // 获取元素
         const body = document.body;
         const avatarContainer = document.getElementById('avatarContainer');
-        let activeWords = []; // 存储当前活跃的漂浮词汇
+        let activeWords = [];
 
-        // 初始化游戏
         function initGame() {
-            // 初始生成一批词汇
             for (let i = 0; i < CONFIG.totalWords; i++) {
                 setTimeout(() => {
                     spawnRandomWord();
                 }, i * 500);
             }
 
-            // 定时生成新词汇
             setInterval(() => {
-                // 控制总词汇数量
                 if (activeWords.length < CONFIG.totalWords) {
                     spawnRandomWord();
                 }
             }, CONFIG.spawnInterval);
         }
 
-        // 生成随机漂浮词汇
         function spawnRandomWord() {
-            // 随机选择正面/负面词汇
-            const isPositive = Math.random() > 0.4; // 60%正面，40%负面
+            const isPositive = Math.random() > 0.4;
             const wordList = isPositive ? wordLibrary.positive : wordLibrary.negative;
             const randomWord = wordList[Math.floor(Math.random() * wordList.length)];
             
-            // 创建词汇元素
             const wordEl = document.createElement('div');
             wordEl.className = `floating-word ${isPositive ? 'positive' : 'negative'}`;
             wordEl.textContent = randomWord;
             wordEl.dataset.type = isPositive ? 'positive' : 'negative';
             wordEl.dataset.word = randomWord;
 
-            // 随机位置（避开头像区域）
             const avatarRect = avatarContainer.getBoundingClientRect();
             let randomX, randomY;
             
-            // 确保词汇不会出现在头像正上方
             do {
                 randomX = Math.random() * (window.innerWidth - 120) + 60;
                 randomY = Math.random() * (window.innerHeight - 120) + 60;
@@ -307,20 +279,138 @@
                 randomY > avatarRect.top - 100 && randomY < avatarRect.bottom + 100
             );
 
-            // 设置随机漂浮参数
-            const randomParamX = Math.random();
-            const randomParamY = Math.random();
+            const randomParamX = Math.random() * 10;
+            const randomParamY = Math.random() * 10;
             wordEl.style.setProperty('--random-x', randomParamX);
             wordEl.style.setProperty('--random-y', randomParamY);
             
-            // 设置初始位置
             wordEl.style.left = `${randomX}px`;
             wordEl.style.top = `${randomY}px`;
             
-            // 随机动画延迟和时长
             const randomDelay = Math.random() * 2;
             const randomDuration = 6 + Math.random() * 6;
             wordEl.style.animationDelay = `${randomDelay}s`;
             wordEl.style.animationDuration = `${randomDuration}s`;
 
- 
+            wordEl.addEventListener('click', handleWordClick);
+
+            body.appendChild(wordEl);
+            activeWords.push(wordEl);
+
+            setTimeout(() => {
+                removeWord(wordEl);
+            }, CONFIG.wordLifetime + randomDelay * 1000);
+        }
+
+        function handleWordClick(e) {
+            const wordEl = e.target;
+            const type = wordEl.dataset.type;
+            const word = wordEl.dataset.word;
+            const rect = wordEl.getBoundingClientRect();
+            const clickX = rect.left + rect.width / 2;
+            const clickY = rect.top + rect.height / 2;
+
+            removeWord(wordEl);
+
+            if (type === 'positive') {
+                createHeartEffect(clickX, clickY, word);
+            } else {
+                createPunishEffect(clickX, clickY);
+            }
+        }
+
+        function createHeartEffect(x, y, word) {
+            for (let i = 0; i < CONFIG.heartCount; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                
+                const offsetX = (Math.random() - 0.5) * 100;
+                const offsetY = (Math.random() - 0.5) * 100;
+                
+                heart.style.left = `${x + offsetX}px`;
+                heart.style.top = `${y + offsetY}px`;
+                
+                heart.style.width = `${20 + Math.random() * 20}px`;
+                heart.style.height = `${20 + Math.random() * 20}px`;
+                
+                heart.style.animationDelay = `${i * 0.05}s`;
+                
+                body.appendChild(heart);
+                
+                setTimeout(() => {
+                    heart.remove();
+                }, 1500);
+            }
+
+            const praiseText = document.createElement('div');
+            praiseText.className = 'punish-text';
+            praiseText.style.color = '#ff6699';
+            praiseText.textContent = `✨ ${word} ✨`;
+            praiseText.style.left = `${x}px`;
+            praiseText.style.top = `${y - 30}px`;
+            praiseText.style.transform = 'translateX(-50%)';
+            body.appendChild(praiseText);
+            
+            setTimeout(() => {
+                praiseText.remove();
+            }, 1000);
+        }
+
+        function createPunishEffect(x, y) {
+            const punish = document.createElement('div');
+            punish.className = 'punish';
+            punish.style.left = `${x}px`;
+            punish.style.top = `${y}px`;
+            punish.style.transform = 'translate(-50%, -50%)';
+            body.appendChild(punish);
+            
+            const punishText = document.createElement('div');
+            punishText.className = 'punish-text';
+            punishText.textContent = '不许这么说！';
+            punishText.style.left = `${x}px`;
+            punishText.style.top = `${y}px`;
+            punishText.style.transform = 'translate(-50%, -50%)';
+            body.appendChild(punishText);
+            
+            avatarContainer.style.animation = 'avatarShake 0.8s ease-out';
+            setTimeout(() => {
+                avatarContainer.style.animation = '';
+            }, 800);
+            
+            setTimeout(() => {
+                punish.remove();
+                punishText.remove();
+            }, 1000);
+        }
+
+        function removeWord(wordEl) {
+            if (wordEl && wordEl.parentNode) {
+                wordEl.style.opacity = '0';
+                wordEl.style.transform = 'scale(0)';
+                wordEl.style.pointerEvents = 'none';
+                
+                setTimeout(() => {
+                    wordEl.remove();
+                    activeWords = activeWords.filter(el => el !== wordEl);
+                }, 300);
+            }
+        }
+
+        window.addEventListener('resize', () => {
+            activeWords.forEach(wordEl => {
+                const currentX = parseFloat(wordEl.style.left);
+                const currentY = parseFloat(wordEl.style.top);
+                
+                if (currentX > window.innerWidth) {
+                    wordEl.style.left = `${window.innerWidth - 100}px`;
+                }
+                if (currentY > window.innerHeight) {
+                    wordEl.style.top = `${window.innerHeight - 100}px`;
+                }
+            });
+        });
+
+        initGame();
+    </script>
+</body>
+</html>

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>欢欢的互动小游戏</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffe6f2 0%, #f8d7e8 100%);
+            min-height: 100vh;
+            overflow: hidden; /* 隐藏滚动条 */
+            position: relative;
+        }
+
+        /* 标题样式 */
+        .game-title {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #e63946;
+            font-size: 32px;
+            text-shadow: 2px 2px 8px rgba(255, 102, 153, 0.4);
+            z-index: 100;
+            text-align: center;
+        }
+
+        /* 头像样式 - 固定位置 */
+        .avatar-container {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 8px solid #ffccd5;
+            box-shadow: 0 5px 20px rgba(255, 153, 204, 0.3);
+            z-index: 90;
+            background: #fff;
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 漂浮词汇通用样式 */
+        .floating-word {
+            position: absolute;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+            opacity: 0;
+            pointer-events: auto;
+            z-index: 50;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            animation: floatRandom 8s linear infinite;
+        }
+
+        /* 正面词汇样式 */
+        .floating-word.positive {
+            background: #ff6699;
+            color: white;
+        }
+
+        /* 负面词汇样式 */
+        .floating-word.negative {
+            background: #999999;
+            color: white;
+        }
+
+        /* 词汇漂浮动画 - 随机轨迹 */
+        @keyframes floatRandom {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 1;
+            }
+            25% {
+                transform: translate(calc(-50px - 20% * var(--random-x)), calc(-80px - 20% * var(--random-y))) rotate(5deg);
+            }
+            50% {
+                transform: translate(calc(80px + 15% * var(--random-x)), calc(-50px + 15% * var(--random-y))) rotate(-5deg);
+            }
+            75% {
+                transform: translate(calc(-30px + 10% * var(--random-x)), calc(60px - 10% * var(--random-y))) rotate(3deg);
+            }
+            100% {
+                transform: translate(calc(50px - 15% * var(--random-x)), calc(-40px + 15% * var(--random-y))) rotate(-3deg);
+                opacity: 1;
+            }
+        }
+
+        /* 爱心特效样式 */
+        .heart {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff6699'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") no-repeat center;
+            background-size: contain;
+            opacity: 0;
+            animation: heartBurst 1.5s ease-out forwards;
+            pointer-events: none;
+            z-index: 60;
+        }
+
+        /* 惩罚特效样式 */
+        .punish {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255, 0, 0, 0.3);
+            border: 3px solid #ff0000;
+            opacity: 0;
+            animation: punishBurst 1s ease-out forwards;
+            pointer-events: none;
+            z-index: 60;
+        }
+
+        /* 惩罚文字提示 */
+        .punish-text {
+            position: absolute;
+            color: #ff0000;
+            font-size: 20px;
+            font-weight: bold;
+            opacity: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            animation: punishText 1s ease-out forwards;
+            pointer-events: none;
+            z-index: 60;
+        }
+
+        /* 头像震动动画 */
+        @keyframes avatarShake {
+            0% { transform: translateX(-50%) rotate(0deg); }
+            20% { transform: translateX(-53%) rotate(-5deg); }
+            40% { transform: translateX(-47%) rotate(5deg); }
+            60% { transform: translateX(-53%) rotate(-3deg); }
+            80% { transform: translateX(-47%) rotate(3deg); }
+            100% { transform: translateX(-50%) rotate(0deg); }
+        }
+
+        /* 爱心爆炸动画 */
+        @keyframes heartBurst {
+            0% {
+                opacity: 1;
+                transform: scale(0);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.5) rotate(180deg);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0) rotate(360deg);
+            }
+        }
+
+        /* 惩罚爆炸动画 */
+        @keyframes punishBurst {
+            0% {
+                opacity: 1;
+                transform: scale(0);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(2);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0);
+            }
+        }
+
+        /* 惩罚文字动画 */
+        @keyframes punishText {
+            0% {
+                opacity: 1;
+                transform: scale(0);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0);
+            }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .game-title {
+                font-size: 24px;
+                top: 10px;
+            }
+            
+            .avatar-container {
+                width: 150px;
+                height: 150px;
+                top: 80px;
+            }
+            
+            .floating-word {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+            
+            .punish-text {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 游戏标题 -->
+    <h1 class="game-title">和欢欢一起玩游戏吧 ❤️</h1>
+    
+    <!-- 头像容器 -->
+    <div class="avatar-container" id="avatarContainer">
+        <img src="huan.png" alt="欢欢" class="avatar" id="avatar">
+    </div>
+
+    <script>
+        // 词汇库
+        const wordLibrary = {
+            positive: [
+                "真漂亮", "超可爱", "好聪明", "最棒了", "笑起来真甜",
+                "小仙女", "太迷人", "超厉害", "萌萌哒", "超温柔",
+                "气质佳", "超有趣", "人见人爱", "花见花开", "超优秀"
+            ],
+            negative: [
+                "不好看", "笨笨的", "不可爱", "不喜欢", "没气质",
+                "傻乎乎", "丑丑的", "不聪明", "讨厌你", "冷冰冰"
+            ]
+        };
+
+        // 配置参数
+        const CONFIG = {
+            totalWords: 20,          // 同时漂浮的词汇总数
+            spawnInterval: 2000,     // 新词汇生成间隔
+            wordLifetime: 8000,      // 词汇存活时间
+            heartCount: 15           // 点击正面词汇生成的爱心数量
+        };
+
+        // 获取元素
+        const body = document.body;
+        const avatarContainer = document.getElementById('avatarContainer');
+        let activeWords = []; // 存储当前活跃的漂浮词汇
+
+        // 初始化游戏
+        function initGame() {
+            // 初始生成一批词汇
+            for (let i = 0; i < CONFIG.totalWords; i++) {
+                setTimeout(() => {
+                    spawnRandomWord();
+                }, i * 500);
+            }
+
+            // 定时生成新词汇
+            setInterval(() => {
+                // 控制总词汇数量
+                if (activeWords.length < CONFIG.totalWords) {
+                    spawnRandomWord();
+                }
+            }, CONFIG.spawnInterval);
+        }
+
+        // 生成随机漂浮词汇
+        function spawnRandomWord() {
+            // 随机选择正面/负面词汇
+            const isPositive = Math.random() > 0.4; // 60%正面，40%负面
+            const wordList = isPositive ? wordLibrary.positive : wordLibrary.negative;
+            const randomWord = wordList[Math.floor(Math.random() * wordList.length)];
+            
+            // 创建词汇元素
+            const wordEl = document.createElement('div');
+            wordEl.className = `floating-word ${isPositive ? 'positive' : 'negative'}`;
+            wordEl.textContent = randomWord;
+            wordEl.dataset.type = isPositive ? 'positive' : 'negative';
+            wordEl.dataset.word = randomWord;
+
+            // 随机位置（避开头像区域）
+            const avatarRect = avatarContainer.getBoundingClientRect();
+            let randomX, randomY;
+            
+            // 确保词汇不会出现在头像正上方
+            do {
+                randomX = Math.random() * (window.innerWidth - 120) + 60;
+                randomY = Math.random() * (window.innerHeight - 120) + 60;
+            } while (
+                randomX > avatarRect.left - 100 && randomX < avatarRect.right + 100 &&
+                randomY > avatarRect.top - 100 && randomY < avatarRect.bottom + 100
+            );
+
+            // 设置随机漂浮参数
+            const randomParamX = Math.random();
+            const randomParamY = Math.random();
+            wordEl.style.setProperty('--random-x', randomParamX);
+            wordEl.style.setProperty('--random-y', randomParamY);
+            
+            // 设置初始位置
+            wordEl.style.left = `${randomX}px`;
+            wordEl.style.top = `${randomY}px`;
+            
+            // 随机动画延迟和时长
+            const randomDelay = Math.random() * 2;
+            const randomDuration = 6 + Math.random() * 6;
+            wordEl.style.animationDelay = `${randomDelay}s`;
+            wordEl.style.animationDuration = `${randomDuration}s`;
+
+ 

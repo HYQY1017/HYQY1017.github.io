@@ -3,46 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>游戏游玩 - 小何游戏</title>
+    <title>小何游戏 - 游玩界面</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
             background: #0D1117;
-            margin: 0;
-            padding: 20px;
-            color: #C9D1D9;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            color: #C9D1D9;
+            height: 100vh;
+            overflow: hidden;
         }
-        .game-area {
-            width: 95%;
-            max-width: 1200px;
-            height: 80vh;
+        .top-bar {
             background: #161B22;
-            border: 1px solid #30363D;
-            border-radius: 8px;
+            border-bottom: 1px solid #30363D;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+        }
+        .logo {
             display: flex;
             align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 20px;
+            gap: 8px;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .logo img {
+            width: 24px;
+            height: 24px;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+        .action-btn {
+            background: #238636;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+        }
+        .action-btn:hover {
+            background: #2EA043;
+        }
+        .action-btn.secondary {
+            background: #30363D;
+        }
+        .action-btn.secondary:hover {
+            background: #484f58;
+        }
+        .game-container {
+            height: calc(100vh - 60px);
+            width: 100%;
+            position: relative;
+        }
+        #gameIframe {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
     </style>
 </head>
 <body>
-    <div class="game-area">
-        <div>
-            <h1 class="text-3xl text-white mb-4">游戏游玩区域</h1>
-            <p class="text-lg mb-6">在此处嵌入你的游戏内容</p>
-            <div class="text-gray-400 text-sm">
-                <p>支持全屏游玩（浏览器自带全屏功能）</p>
-            </div>
+    <div class="top-bar">
+        <div class="logo">
+            <img src="img/logo.png" alt="小何游戏">
+            小何游戏
+        </div>
+        <div class="btn-group">
+            <button class="action-btn secondary" onclick="refreshGame()">
+                <i class="fas fa-refresh"></i>
+                刷新游戏
+            </button>
+            <button class="action-btn secondary" onclick="toggleFullscreen()">
+                <i class="fas fa-expand"></i>
+                全屏游玩
+            </button>
+            <button class="action-btn" onclick="goBackHome()">
+                <i class="fas fa-home"></i>
+                返回主页
+            </button>
         </div>
     </div>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <div class="game-container">
+        <iframe id="gameIframe" src="game.html" allowfullscreen></iframe>
+    </div>
+
+    <script>
+        function refreshGame() {
+            const iframe = document.getElementById('gameIframe');
+            iframe.src = iframe.src;
+        }
+
+        function toggleFullscreen() {
+            const iframe = document.getElementById('gameIframe');
+            if (!document.fullscreenElement) {
+                iframe.requestFullscreen().catch(err => {
+                    alert(`全屏失败: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        function goBackHome() {
+            window.location.href = 'https://www.cmh.he.cn';
+        }
+    </script>
 </body>
 </html>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>视频转换 - 小何转换</title>
-    <link rel="icon" href="www.cmh.he.cn/img/logo.png">
+    <link rel="icon" href="https://www.cmh.he.cn/img/logo.svg">
     <style>
         * {
             margin: 0;
@@ -200,14 +200,13 @@
             }
         }
     </style>
-    <!-- 本地引入FFmpeg和FontAwesome -->
-    <script src="js/ffmpeg.min.js"></script>
-    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/ffmpeg.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
 </head>
 <body>
     <div class="header">
         <button class="back-btn" onclick="window.location.href='/'">
-            <i class="fas fa-arrow-left"></i>
+            <i class="fa fa-arrow-left"></i>
             <span>返回主页</span>
         </button>
         <h1 class="page-title">视频转换</h1>
@@ -216,7 +215,7 @@
     <div class="converter-container">
         <div class="upload-area" onclick="document.getElementById('file-input').click()">
             <div class="upload-icon">
-                <i class="fas fa-cloud-upload-alt"></i>
+                <i class="fa fa-cloud-upload"></i>
             </div>
             <p class="upload-text">点击上传视频文件</p>
             <p class="upload-subtext">支持 MP4、AVI、MKV、MOV 等格式</p>
@@ -235,7 +234,6 @@
                     <option value="webm">WEBM</option>
                 </select>
             </div>
-
             <div class="setting-group">
                 <label class="setting-label">分辨率</label>
                 <select class="setting-select" id="resolution-select">
@@ -248,7 +246,6 @@
                     <option value="640x360">360P (640x360)</option>
                 </select>
             </div>
-
             <div class="setting-group">
                 <label class="setting-label">帧率</label>
                 <select class="setting-select" id="fps-select">
@@ -273,7 +270,7 @@
         const { createFFmpeg, fetchFile } = FFmpeg;
         const ffmpeg = createFFmpeg({ 
             log: true,
-            corePath: 'js/ffmpeg-core.js'
+            corePath: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/ffmpeg-core.js'
         });
         
         let selectedFile = null;
@@ -315,7 +312,4 @@
                 ffmpeg.FS('writeFile', inputFileName, await fetchFile(selectedFile));
                 progressBar.style.width = "40%";
 
-                let ffmpegArgs = ['-i', inputFileName];
-                
-                if (resolution !== 'original') {
-                    const [width, height] = resolution.spl
+                let ffmpegArgs = ['-i', inputFile

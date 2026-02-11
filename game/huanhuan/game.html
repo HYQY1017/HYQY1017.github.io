@@ -79,23 +79,11 @@
         }
 
         @keyframes floatRandom {
-            0% {
-                transform: translate(0, 0) rotate(0deg);
-                opacity: 1;
-            }
-            25% {
-                transform: translate(calc(-50px - 20% * var(--random-x)), calc(-80px - 20% * var(--random-y))) rotate(5deg);
-            }
-            50% {
-                transform: translate(calc(80px + 15% * var(--random-x)), calc(-50px + 15% * var(--random-y))) rotate(-5deg);
-            }
-            75% {
-                transform: translate(calc(-30px + 10% * var(--random-x)), calc(60px - 10% * var(--random-y))) rotate(3deg);
-            }
-            100% {
-                transform: translate(calc(50px - 15% * var(--random-x)), calc(-40px + 15% * var(--random-y))) rotate(-3deg);
-                opacity: 1;
-            }
+            0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+            25% { transform: translate(-30px, -40px) rotate(3deg); }
+            50% { transform: translate(40px, -20px) rotate(-3deg); }
+            75% { transform: translate(-20px, 30px) rotate(2deg); }
+            100% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
         }
 
         .heart {
@@ -145,70 +133,28 @@
         }
 
         @keyframes heartBurst {
-            0% {
-                opacity: 1;
-                transform: scale(0);
-            }
-            50% {
-                opacity: 1;
-                transform: scale(1.5) rotate(180deg);
-            }
-            100% {
-                opacity: 0;
-                transform: scale(0) rotate(360deg);
-            }
+            0% { opacity: 1; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1.5) rotate(180deg); }
+            100% { opacity: 0; transform: scale(0) rotate(360deg); }
         }
 
         @keyframes punishBurst {
-            0% {
-                opacity: 1;
-                transform: scale(0);
-            }
-            50% {
-                opacity: 1;
-                transform: scale(2);
-            }
-            100% {
-                opacity: 0;
-                transform: scale(0);
-            }
+            0% { opacity: 1; transform: scale(0); }
+            50% { opacity: 1; transform: scale(2); }
+            100% { opacity: 0; transform: scale(0); }
         }
 
         @keyframes punishText {
-            0% {
-                opacity: 1;
-                transform: scale(0);
-            }
-            50% {
-                opacity: 1;
-                transform: scale(1.2);
-            }
-            100% {
-                opacity: 0;
-                transform: scale(0);
-            }
+            0% { opacity: 1; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1.2); }
+            100% { opacity: 0; transform: scale(0); }
         }
 
         @media (max-width: 768px) {
-            .game-title {
-                font-size: 24px;
-                top: 10px;
-            }
-            
-            .avatar-container {
-                width: 150px;
-                height: 150px;
-                top: 80px;
-            }
-            
-            .floating-word {
-                font-size: 14px;
-                padding: 8px 16px;
-            }
-            
-            .punish-text {
-                font-size: 16px;
-            }
+            .game-title { font-size: 24px; top: 10px; }
+            .avatar-container { width: 150px; height: 150px; top: 80px; }
+            .floating-word { font-size: 14px; padding: 8px 16px; }
+            .punish-text { font-size: 16px; }
         }
     </style>
 </head>
@@ -275,25 +221,21 @@
                 randomX = Math.random() * (window.innerWidth - 120) + 60;
                 randomY = Math.random() * (window.innerHeight - 120) + 60;
             } while (
-                randomX > avatarRect.left - 100 && randomX < avatarRect.right + 100 &&
-                randomY > avatarRect.top - 100 && randomY < avatarRect.bottom + 100
+                randomX > avatarRect.left - 100 && 
+                randomX < avatarRect.right + 100 &&
+                randomY > avatarRect.top - 100 && 
+                randomY < avatarRect.bottom + 100
             );
 
-            const randomParamX = Math.random() * 10;
-            const randomParamY = Math.random() * 10;
-            wordEl.style.setProperty('--random-x', randomParamX);
-            wordEl.style.setProperty('--random-y', randomParamY);
-            
             wordEl.style.left = `${randomX}px`;
             wordEl.style.top = `${randomY}px`;
             
             const randomDelay = Math.random() * 2;
-            const randomDuration = 6 + Math.random() * 6;
+            const randomDuration = 6 + Math.random() * 4;
             wordEl.style.animationDelay = `${randomDelay}s`;
             wordEl.style.animationDuration = `${randomDuration}s`;
 
             wordEl.addEventListener('click', handleWordClick);
-
             body.appendChild(wordEl);
             activeWords.push(wordEl);
 
@@ -302,17 +244,55 @@
             }, CONFIG.wordLifetime + randomDelay * 1000);
         }
 
+        function removeWord(wordEl) {
+            if (!wordEl) return;
+            wordEl.remove();
+            activeWords = activeWords.filter(w => w !== wordEl);
+        }
+
         function handleWordClick(e) {
             const wordEl = e.target;
             const type = wordEl.dataset.type;
-            const word = wordEl.dataset.word;
             const rect = wordEl.getBoundingClientRect();
-            const clickX = rect.left + rect.width / 2;
-            const clickY = rect.top + rect.height / 2;
+            const x = rect.left + rect.width / 2;
+            const y = rect.top + rect.height / 2;
 
             removeWord(wordEl);
 
             if (type === 'positive') {
-                createHeartEffect(clickX, clickY, word);
+                createHearts(x, y);
             } else {
-      
+                createPunish(x, y);
+            }
+        }
+
+        function createHearts(x, y) {
+            for (let i = 0; i < 10; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.style.left = x + 'px';
+                heart.style.top = y + 'px';
+                heart.style.animationDelay = (i * 0.05) + 's';
+                body.appendChild(heart);
+                setTimeout(() => heart.remove(), 1500);
+            }
+        }
+
+        function createPunish(x, y) {
+            const punish = document.createElement('div');
+            punish.className = 'punish';
+            punish.style.left = x + 'px';
+            punish.style.top = y + 'px';
+            body.appendChild(punish);
+            setTimeout(() => punish.remove(), 1000);
+
+            const text = document.createElement('div');
+            text.className = 'punish-text';
+            text.textContent = '不许说坏话说！';
+            text.style.left = x + 'px';
+            text.style.top = y - 40 + 'px';
+            body.appendChild(text);
+            setTimeout(() => text.remove(), 1000);
+        }
+
+        window.onload

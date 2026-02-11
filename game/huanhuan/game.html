@@ -1,298 +1,141 @@
+<!-- 小何 -->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>欢欢的互动小游戏</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Microsoft YaHei", sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #ffe6f2 0%, #f8d7e8 100%);
-            min-height: 100vh;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .game-title {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #e63946;
-            font-size: 32px;
-            text-shadow: 2px 2px 8px rgba(255, 102, 153, 0.4);
-            z-index: 100;
-            text-align: center;
-        }
-
-        .avatar-container {
-            position: fixed;
-            top: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 8px solid #ffccd5;
-            box-shadow: 0 5px 20px rgba(255, 153, 204, 0.3);
-            z-index: 90;
-            background: #fff;
-        }
-
-        .avatar {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .floating-word {
-            position: absolute;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            user-select: none;
-            pointer-events: auto;
-            z-index: 50;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            animation: floatRandom 8s linear infinite;
-            opacity: 1;
-        }
-
-        .floating-word.positive {
-            background: #ff6699;
-            color: white;
-        }
-
-        .floating-word.negative {
-            background: #999999;
-            color: white;
-        }
-
-        @keyframes floatRandom {
-            0% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
-            25% { transform: translate(-30px, -40px) rotate(3deg); }
-            50% { transform: translate(40px, -20px) rotate(-3deg); }
-            75% { transform: translate(-20px, 30px) rotate(2deg); }
-            100% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
-        }
-
-        .heart {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff6699'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") no-repeat center;
-            background-size: contain;
-            opacity: 0;
-            animation: heartBurst 1.5s ease-out forwards;
-            pointer-events: none;
-            z-index: 60;
-        }
-
-        .punish {
-            position: absolute;
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: rgba(255, 0, 0, 0.3);
-            border: 3px solid #ff0000;
-            opacity: 0;
-            animation: punishBurst 1s ease-out forwards;
-            pointer-events: none;
-            z-index: 60;
-        }
-
-        .punish-text {
-            position: absolute;
-            color: #ff0000;
-            font-size: 20px;
-            font-weight: bold;
-            opacity: 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-            animation: punishText 1s ease-out forwards;
-            pointer-events: none;
-            z-index: 60;
-        }
-
-        @keyframes avatarShake {
-            0% { transform: translateX(-50%) rotate(0deg); }
-            20% { transform: translateX(-53%) rotate(-5deg); }
-            40% { transform: translateX(-47%) rotate(5deg); }
-            60% { transform: translateX(-53%) rotate(-3deg); }
-            80% { transform: translateX(-47%) rotate(3deg); }
-            100% { transform: translateX(-50%) rotate(0deg); }
-        }
-
-        @keyframes heartBurst {
-            0% { opacity: 1; transform: scale(0); }
-            50% { opacity: 1; transform: scale(1.5) rotate(180deg); }
-            100% { opacity: 0; transform: scale(0) rotate(360deg); }
-        }
-
-        @keyframes punishBurst {
-            0% { opacity: 1; transform: scale(0); }
-            50% { opacity: 1; transform: scale(2); }
-            100% { opacity: 0; transform: scale(0); }
-        }
-
-        @keyframes punishText {
-            0% { opacity: 1; transform: scale(0); }
-            50% { opacity: 1; transform: scale(1.2); }
-            100% { opacity: 0; transform: scale(0); }
-        }
-
-        @media (max-width: 768px) {
-            .game-title { font-size: 24px; top: 10px; }
-            .avatar-container { width: 150px; height: 150px; top: 80px; }
-            .floating-word { font-size: 14px; padding: 8px 16px; }
-            .punish-text { font-size: 16px; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>欢欢的互动小游戏</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Microsoft YaHei",sans-serif}
+body{background:linear-gradient(135deg,#ffe6f2 0%,#f8d7e8 100%);min-height:100vh;overflow:hidden;position:relative}
+.game-title{position:fixed;top:20px;left:50%;transform:translateX(-50%);color:#e63946;font-size:32px;text-shadow:2px 2px 8px rgba(255,102,153,0.4);z-index:100;text-align:center}
+.avatar-container{position:fixed;top:100px;left:50%;transform:translateX(-50%);width:200px;height:200px;border-radius:50%;overflow:hidden;border:8px solid #ffccd5;box-shadow:0 5px 20px rgba(255,153,204,0.3);z-index:90;background:#fff}
+.avatar{width:100%;height:100%;object-fit:cover}
+.floating-word{position:absolute;padding:10px 20px;border-radius:50px;font-size:18px;font-weight:bold;cursor:pointer;user-select:none;pointer-events:auto;z-index:50;transition:all .2s ease;box-shadow:0 4px 10px rgba(0,0,0,0.1);animation:floatWord 8s linear infinite;opacity:1}
+.floating-word.positive{background:#ff6699;color:white}
+.floating-word.negative{background:#999999;color:white}
+@keyframes floatWord{
+    0%{transform:translate(0,0) rotate(0deg)}
+    25%{transform:translate(-20px,-30px) rotate(2deg)}
+    50%{transform:translate(30px,-20px) rotate(-2deg)}
+    75%{transform:translate(-15px,25px) rotate(1deg)}
+    100%{transform:translate(0,0) rotate(0deg)}
+}
+.heart{position:absolute;width:30px;height:30px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff6699'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") no-repeat center;background-size:contain;opacity:0;animation:heartBurst 1.5s ease-out forwards;pointer-events:none;z-index:60}
+.punish{position:absolute;width:80px;height:80px;border-radius:50%;background:rgba(255,0,0,0.3);border:3px solid red;opacity:0;animation:punishBurst 1s ease-out forwards;pointer-events:none;z-index:60}
+.punish-text{position:absolute;color:red;font-size:20px;font-weight:bold;opacity:0;text-shadow:2px 2px 4px rgba(0,0,0,0.2);animation:punishText 1s ease-out forwards;pointer-events:none;z-index:60}
+@keyframes heartBurst{0%{opacity:1;transform:scale(0)}50%{opacity:1;transform:scale(1.5) rotate(180deg)}100%{opacity:0;transform:scale(0) rotate(360deg)}}
+@keyframes punishBurst{0%{opacity:1;transform:scale(0)}50%{opacity:1;transform:scale(2)}100%{opacity:0;transform:scale(0)}}
+@keyframes punishText{0%{opacity:1;transform:scale(0)}50%{opacity:1;transform:scale(1.2)}100%{opacity:0;transform:scale(0)}}
+@media (max-width:768px){
+.game-title{font-size:24px;top:10px}
+.avatar-container{width:150px;height:150px;top:80px}
+.floating-word{font-size:14px;padding:8px 16px}
+.punish-text{font-size:16px}
+}
+</style>
 </head>
 <body>
-    <h1 class="game-title">和欢欢一起玩游戏吧 ❤️</h1>
-    
-    <div class="avatar-container" id="avatarContainer">
-        <img src="huan.png" alt="欢欢" class="avatar" id="avatar">
-    </div>
+<h1 class="game-title">和欢欢一起玩游戏吧 ❤️</h1>
+<div class="avatar-container" id="avatarContainer">
+<img src="https://picsum.photos/200/200?random=520" alt="欢欢" class="avatar">
+</div>
 
-    <script>
-        const wordLibrary = {
-            positive: [
-                "真漂亮", "超可爱", "好聪明", "最棒了", "笑起来真甜",
-                "小仙女", "太迷人", "超厉害", "萌萌哒", "超温柔",
-                "气质佳", "超有趣", "人见人爱", "花见花开", "超优秀"
-            ],
-            negative: [
-                "不好看", "笨笨的", "不可爱", "不喜欢", "没气质",
-                "傻乎乎", "丑丑的", "不聪明", "讨厌你", "冷冰冰"
-            ]
-        };
+<script>
+const wordLibrary={
+    positive:["真漂亮","超可爱","好聪明","最棒了","笑起来真甜","小仙女","太迷人","超厉害","萌萌哒","超温柔","气质佳","超有趣","人见人爱","花见花开","超优秀"],
+    negative:["不好看","笨笨的","不可爱","不喜欢","没气质","傻乎乎","丑丑的","不聪明","讨厌你","冷冰冰"]
+};
+const CONFIG={totalWords:20,spawnInterval:2000,wordLifetime:8000};
+const body=document.body;
+const avatarContainer=document.getElementById('avatarContainer');
+let activeWords=[];
 
-        const CONFIG = {
-            totalWords: 20,
-            spawnInterval: 2000,
-            wordLifetime: 8000,
-            heartCount: 15
-        };
+function initGame(){
+    for(let i=0;i<CONFIG.totalWords;i++){
+        setTimeout(()=>spawnRandomWord(),i*500);
+    }
+    setInterval(()=>{
+        if(activeWords.length<CONFIG.totalWords) spawnRandomWord();
+    },CONFIG.spawnInterval);
+}
 
-        const body = document.body;
-        const avatarContainer = document.getElementById('avatarContainer');
-        let activeWords = [];
+function spawnRandomWord(){
+    const isPositive=Math.random()>0.4;
+    const list=isPositive?wordLibrary.positive:wordLibrary.negative;
+    const word=list[Math.floor(Math.random()*list.length)];
+    const el=document.createElement('div');
+    el.className=`floating-word ${isPositive?'positive':'negative'}`;
+    el.textContent=word;
+    el.dataset.type=isPositive?'positive':'negative';
 
-        function initGame() {
-            for (let i = 0; i < CONFIG.totalWords; i++) {
-                setTimeout(() => {
-                    spawnRandomWord();
-                }, i * 500);
-            }
+    const r=avatarContainer.getBoundingClientRect();
+    let x,y;
+    do{
+        x=Math.random()*(innerWidth-140)+70;
+        y=Math.random()*(innerHeight-140)+70;
+    }while(
+        x>r.left-120 && x<r.right+120 &&
+        y>r.top-120 && y<r.bottom+120
+    );
 
-            setInterval(() => {
-                if (activeWords.length < CONFIG.totalWords) {
-                    spawnRandomWord();
-                }
-            }, CONFIG.spawnInterval);
-        }
+    el.style.left=x+'px';
+    el.style.top=y+'px';
+    el.style.animationDuration=(6+Math.random()*4)+'s';
+    el.addEventListener('click',onClick);
+    body.appendChild(el);
+    activeWords.push(el);
 
-        function spawnRandomWord() {
-            const isPositive = Math.random() > 0.4;
-            const wordList = isPositive ? wordLibrary.positive : wordLibrary.negative;
-            const randomWord = wordList[Math.floor(Math.random() * wordList.length)];
-            
-            const wordEl = document.createElement('div');
-            wordEl.className = `floating-word ${isPositive ? 'positive' : 'negative'}`;
-            wordEl.textContent = randomWord;
-            wordEl.dataset.type = isPositive ? 'positive' : 'negative';
-            wordEl.dataset.word = randomWord;
+    setTimeout(()=>removeWord(el),CONFIG.wordLifetime);
+}
 
-            const avatarRect = avatarContainer.getBoundingClientRect();
-            let randomX, randomY;
-            
-            do {
-                randomX = Math.random() * (window.innerWidth - 120) + 60;
-                randomY = Math.random() * (window.innerHeight - 120) + 60;
-            } while (
-                randomX > avatarRect.left - 100 && 
-                randomX < avatarRect.right + 100 &&
-                randomY > avatarRect.top - 100 && 
-                randomY < avatarRect.bottom + 100
-            );
+function removeWord(el){
+    if(!el)return;
+    el.remove();
+    activeWords=activeWords.filter(w=>w!==el);
+}
 
-            wordEl.style.left = `${randomX}px`;
-            wordEl.style.top = `${randomY}px`;
-            
-            const randomDelay = Math.random() * 2;
-            const randomDuration = 6 + Math.random() * 4;
-            wordEl.style.animationDelay = `${randomDelay}s`;
-            wordEl.style.animationDuration = `${randomDuration}s`;
+function onClick(e){
+    const el=e.target;
+    const type=el.dataset.type;
+    const r=el.getBoundingClientRect();
+    const x=r.left+r.width/2;
+    const y=r.top+r.height/2;
+    removeWord(el);
+    if(type==='positive') createHearts(x,y);
+    else createPunish(x,y);
+}
 
-            wordEl.addEventListener('click', handleWordClick);
-            body.appendChild(wordEl);
-            activeWords.push(wordEl);
+function createHearts(x,y){
+    for(let i=0;i<10;i++){
+        const h=document.createElement('div');
+        h.className='heart';
+        h.style.left=x+'px';
+        h.style.top=y+'px';
+        h.style.animationDelay=(i*0.05)+'s';
+        body.appendChild(h);
+        setTimeout(()=>h.remove(),1500);
+    }
+}
 
-            setTimeout(() => {
-                removeWord(wordEl);
-            }, CONFIG.wordLifetime + randomDelay * 1000);
-        }
+function createPunish(x,y){
+    const p=document.createElement('div');
+    p.className='punish';
+    p.style.left=x+'px';
+    p.style.top=y+'px';
+    body.appendChild(p);
+    setTimeout(()=>p.remove(),1000);
 
-        function removeWord(wordEl) {
-            if (!wordEl) return;
-            wordEl.remove();
-            activeWords = activeWords.filter(w => w !== wordEl);
-        }
+    const t=document.createElement('div');
+    t.className='punish-text';
+    t.textContent='不许说坏话说！';
+    t.style.left=x+'px';
+    t.style.top=y-40+'px';
+    body.appendChild(t);
+    setTimeout(()=>t.remove(),1000);
+}
 
-        function handleWordClick(e) {
-            const wordEl = e.target;
-            const type = wordEl.dataset.type;
-            const rect = wordEl.getBoundingClientRect();
-            const x = rect.left + rect.width / 2;
-            const y = rect.top + rect.height / 2;
-
-            removeWord(wordEl);
-
-            if (type === 'positive') {
-                createHearts(x, y);
-            } else {
-                createPunish(x, y);
-            }
-        }
-
-        function createHearts(x, y) {
-            for (let i = 0; i < 10; i++) {
-                const heart = document.createElement('div');
-                heart.className = 'heart';
-                heart.style.left = x + 'px';
-                heart.style.top = y + 'px';
-                heart.style.animationDelay = (i * 0.05) + 's';
-                body.appendChild(heart);
-                setTimeout(() => heart.remove(), 1500);
-            }
-        }
-
-        function createPunish(x, y) {
-            const punish = document.createElement('div');
-            punish.className = 'punish';
-            punish.style.left = x + 'px';
-            punish.style.top = y + 'px';
-            body.appendChild(punish);
-            setTimeout(() => punish.remove(), 1000);
-
-            const text = document.createElement('div');
-            text.className = 'punish-text';
-            text.textContent = '不许说坏话说！';
-            text.style.left = x + 'px';
-            text.style.top = y - 40 + 'px';
-            body.appendChild(text);
-            setTimeout(() => text.remove(), 1000);
-        }
-
-        window.onload
+window.onload=initGame;
+</script>
+</body>
+</html>

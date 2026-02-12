@@ -3,198 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>小何转换</title>
-    <link rel="icon" href="https://www.cmh.he.cn/img/logo.png">
+    <title>小何工具 - 一站式文件转换工具</title>
+    <link rel="icon" href="img/logo.png" type="image/png">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        * {margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+        :root {
+            --icon-size-lg: 3rem;
+            --icon-size-md: 2.5rem;
+            --icon-size-sm: 2rem;
+            --card-padding-lg: 30px 20px;
+            --card-padding-md: 25px 18px;
+            --card-padding-sm: 20px 15px;
         }
-
-        body {
-            background-color: #f5f5f7;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            padding: 60px 20px;
-            color: #1d1d1f;
+        body {background:#fff;color:#000;min-height:100vh;padding:60px 20px;}
+        .container {max-width:1200px;margin:0 auto;padding:0 16px;}
+        .header {text-align:center;margin-bottom:60px;}
+        .logo {font-size:clamp(2.2rem, 5vw, 3rem);font-weight:700;letter-spacing:-0.05em;margin-bottom:16px;}
+        .slogan {font-size:clamp(1rem, 2vw, 1.2rem);color:#6e6e73;max-width:600px;margin:0 auto;line-height:1.5;}
+        .feature-grid {display:grid;grid-template-columns:repeat(3, 1fr);gap:clamp(16px, 2vw, 20px);margin-top:40px;margin-bottom:60px;}
+        .feature-card {
+            background:#f9f9f9;border:1px solid #e6e6e6;border-radius:20px;
+            padding:var(--card-padding-lg);text-align:center;cursor:pointer;
+            transition:all 0.3s ease;position:relative;overflow:hidden;
+            aspect-ratio:1/1;display:flex;flex-direction:column;justify-content:center;
         }
-
-        .title-container {
-            text-align: center;
-            margin-bottom: 50px;
-            width: 100%;
-            max-width: 1000px;
+        .feature-card:hover {
+            transform:translateY(-8px);box-shadow:0 8px 24px rgba(0,0,0,0.08);
+            border-color:#000;
         }
-
-        .title {
-            font-size: 2.8rem;
-            font-weight: 600;
-            color: #1d1d1f;
-            margin-bottom: 12px;
-            letter-spacing: -0.02em;
+        .feature-icon {
+            font-size:var(--icon-size-lg);
+            margin-bottom:15px;
+            display:inline-block;
         }
-
-        .subtitle {
-            font-size: 1.1rem;
-            color: #86868b;
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.5;
+        .feature-title {font-size:clamp(1rem, 2vw, 1.2rem);font-weight:600;margin-bottom:8px;}
+        .feature-desc {
+            font-size:clamp(0.75rem, 1.5vw, 0.85rem);color:#6e6e73;
+            line-height:1.4;flex:1;
         }
-
-        .file-type-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 24px;
-            width: 100%;
-            max-width: 1000px;
+        .all-feature {border-color:#000;background:#f0f0f0;}
+        
+        @media (max-width:768px) {
+            .feature-grid {grid-template-columns:repeat(2, 1fr);}
+            .feature-card {padding:var(--card-padding-md);aspect-ratio:4/3;}
+            .feature-icon {font-size:var(--icon-size-md);}
+            .header {margin-bottom:40px;}
         }
-
-        .file-card {
-            background-color: #ffffff;
-            border-radius: 18px;
-            padding: 32px 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        
+        @media (max-width:480px) {
+            body {padding:40px 16px;}
+            .feature-grid {grid-template-columns:1fr;}
+            .feature-card {padding:var(--card-padding-sm);}
+            .feature-icon {font-size:var(--icon-size-sm);}
+            .feature-grid {margin-bottom:40px;}
+            .feature-card:hover {transform:translateY(-4px);box-shadow:0 4px 12px rgba(0,0,0,0.06);}
         }
-
-        .file-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .file-icon {
-            font-size: 2.8rem;
-            margin-bottom: 16px;
-            color: #0071e3;
-        }
-
-        .video-icon { color: #ff3b30; }
-        .picture-icon { color: #34c759; }
-        .document-icon { color: #007aff; }
-        .audio-icon { color: #af52de; }
-        .compress-icon { color: #ff9500; }
-        .extract-icon { color: #5856d6; }
-        .subtitle-icon { color: #ff2d55; }
-        .pdf-icon { color: #ff3b30; }
-        .archive-icon { color: #8e8e93; }
-
-        .file-name {
-            font-size: 1.1rem;
-            font-weight: 500;
-            color: #1d1d1f;
-            margin-bottom: 8px;
-        }
-
-        .file-desc {
-            font-size: 0.85rem;
-            color: #86868b;
-            line-height: 1.4;
-        }
-
-        @media (max-width: 768px) {
-            .title {
-                font-size: 2.2rem;
-            }
-            .file-type-container {
-                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-                gap: 18px;
-            }
-            .file-icon {
-                font-size: 2.2rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            body {
-                padding: 40px 16px;
-            }
-            .title {
-                font-size: 1.8rem;
-            }
-            .file-card {
-                padding: 24px 16px;
-            }
+        
+        @media (max-width:360px) {
+            .logo {font-size:2rem;}
+            .feature-desc {font-size:0.75rem;}
         }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="title-container">
-        <h1 class="title">小何转换</h1>
-        <p class="subtitle">一站式文件格式转换工具，简洁高效</p>
-    </div>
+    <div class="container">
+        <div class="header">
+            <h1 class="logo">小何工具</h1>
+            <p class="slogan">简单、高效、安全的一站式文件转换工具，所有操作均在本地完成</p>
+        </div>
 
-    <div class="file-type-container">
-        <div class="file-card" onclick="window.location.href='video/'">
-            <div class="file-icon video-icon">
-                <i class="fas fa-video"></i>
+        <div class="feature-grid">
+            <div class="feature-card all-feature" onclick="window.location.href='all/'">
+                <div class="feature-icon">📋</div>
+                <h2 class="feature-title">全部功能</h2>
+                <p class="feature-desc">一站式管理所有文件处理需求</p>
             </div>
-            <div class="file-name">视频转换</div>
-            <div class="file-desc">格式/分辨率/帧率转换</div>
-        </div>
-        <div class="file-card" onclick="window.location.href='picture/'">
-            <div class="file-icon picture-icon">
-                <i class="fas fa-image"></i>
+            <div class="feature-card" onclick="window.location.href='video/'">
+                <div class="feature-icon">🎬</div>
+                <h2 class="feature-title">视频转换</h2>
+                <p class="feature-desc">格式转换、裁剪、旋转、倍速</p>
             </div>
-            <div class="file-name">图片转换</div>
-            <div class="file-desc">格式/尺寸/画质调整</div>
-        </div>
-        <div class="file-card" onclick="window.location.href='document/'">
-            <div class="file-icon document-icon">
-                <i class="fas fa-file-alt"></i>
+            <div class="feature-card" onclick="window.location.href='image/'">
+                <div class="feature-icon">🖼️</div>
+                <h2 class="feature-title">图片转换</h2>
+                <p class="feature-desc">格式互转、压缩、添加水印</p>
             </div>
-            <div class="file-name">文档转换</div>
-            <div class="file-desc">Word/Excel/PDF互转</div>
-        </div>
-        <div class="file-card" onclick="window.location.href='audio/'">
-            <div class="file-icon audio-icon">
-                <i class="fas fa-music"></i>
+            <div class="feature-card" onclick="window.location.href='audio/'">
+                <div class="feature-icon">🎵</div>
+                <h2 class="feature-title">音频转换</h2>
+                <p class="feature-desc">格式转换、剪切、合并</p>
             </div>
-            <div class="file-name">音频转换</div>
-            <div class="file-desc">格式/音质/声道调整</div>
-        </div>
-        <div class="file-card" onclick="window.location.href='compress/'">
-            <div class="file-icon compress-icon">
-                <i class="fas fa-compress-alt"></i>
+            <div class="feature-card" onclick="window.location.href='doc/'">
+                <div class="feature-icon">📄</div>
+                <h2 class="feature-title">文档转换</h2>
+                <p class="feature-desc">PDF/Word/Excel格式互转</p>
             </div>
-            <div class="file-name">文件压缩</div>
-            <div class="file-desc">视频/图片/文档压缩</div>
-        </div>
-        <div class="file-card" onclick="window.location.href='extract/'">
-            <div class="file-icon extract-icon">
-                <i class="fas fa-file-export"></i>
+            <div class="feature-card" onclick="window.location.href='compress/'">
+                <div class="feature-icon">🗜️</div>
+                <h2 class="feature-title">文件压缩</h2>
+                <p class="feature-desc">视频/图片/文档无损压缩</p>
             </div>
-            <div class="file-name">格式提取</div>
-            <div class="file-desc">音视频/图片元素提取</div>
-        </div>
-        <div class="file-card" onclick="window.location.href='subtitle/'">
-            <div class="file-icon subtitle-icon">
-                <i class="fas fa-closed-captioning"></i>
+            <div class="feature-card" onclick="window.location.href='merge/'">
+                <div class="feature-icon">🧩</div>
+                <h2 class="feature-title">文件合并</h2>
+                <p class="feature-desc">视频/音频/文档批量合并</p>
             </div>
-            <div class="file-name">字幕处理</div>
-            <div class="file-desc">字幕提取/转换/嵌入</div>
-        </div>
-        <div class="file-card" onclick="window.location.href='pdf/'">
-            <div class="file-icon pdf-icon">
-                <i class="fas fa-file-pdf"></i>
+            <div class="feature-card" onclick="window.location.href='split/'">
+                <div class="feature-icon">✂️</div>
+                <h2 class="feature-title">文件拆分</h2>
+                <p class="feature-desc">视频/文档按章节拆分</p>
             </div>
-            <div class="file-name">PDF处理</div>
-            <div class="file-desc">合并/拆分/加密/解密</div>
-        </div>
-        <div class="file-card" onclick="window.location.href='archive/'">
-            <div class="file-icon archive-icon">
-                <i class="fas fa-file-archive"></i>
-            </div>
-            <div class="file-name">压缩包处理</div>
-            <div class="file-desc">解压/压缩/格式转换</div>
         </div>
     </div>
 </body>

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -98,13 +99,18 @@ function updatePathBar() {
 
 function findNodeById(root, id) {
     if (root.id === id) return root;
+    let found = null;
     for (const child of root.children) {
+        if (child.id === id) {
+            found = child;
+            break;
+        }
         if (child.type === 'folder') {
-            const found = findNodeById(child, id);
-            if (found) return found;
+            found = findNodeById(child, id);
+            if (found) break;
         }
     }
-    return null;
+    return found;
 }
 
 function navigateToNode(node) {
@@ -138,6 +144,7 @@ function updateFileList() {
             const li = document.createElement('li');
             li.className = `file-item ${item.type}`;
             li.dataset.id = item.id;
+            li.dataset.type = item.type;
             
             const depthIndent = ' '.repeat(item.depth * 2);
             const depthIndicator = `<span class="depth-indicator"></span>`.repeat(item.depth);
@@ -145,13 +152,13 @@ function updateFileList() {
             let actionsHtml = '';
             if (item.type === 'folder') {
                 actionsHtml = `
-                    <button class="rename-btn" data-id="${item.id}" data-type="folder">重命名</button>
-                    <button class="delete-btn danger" data-id="${item.id}" data-type="folder">删除</button>
+                    <button class="rename-btn" data-id="${item.id}">重命名</button>
+                    <button class="delete-btn danger" data-id="${item.id}">删除</button>
                 `;
             } else {
                 actionsHtml = `
-                    <button class="rename-btn" data-id="${item.id}" data-type="file">重命名</button>
-                    <button class="delete-btn danger" data-id="${item.id}" data-type="file">删除</button>
+                    <button class="rename-btn" data-id="${item.id}">重命名</button>
+                    <button class="delete-btn danger" data-id="${item.id}">删除</button>
                 `;
             }
 
@@ -167,67 +174,49 @@ function updateFileList() {
             `;
             fileListEl.appendChild(li);
         });
-
-        bindItemEvents();
     }
 }
 
-function bindItemEvents() {
-    document.querySelectorAll('.enter-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const itemId = this.dataset.id;
-            const item = findNodeById(ROOT_NODE, itemId);
-            if (item) navigateToNode(item);
-        });
-    });
+fileListEl.addEventListener('click', function(e) {
+    const target = e.target;
+    const itemId = target.dataset.id;
+    if (!itemId) return;
 
-    document.querySelectorAll('.rename-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const itemId = this.dataset.id;
-            const itemType = this.dataset.type;
-            const item = findNodeById(ROOT_NODE, itemId);
-            if (!item) return;
+    const item = findNodeById(ROOT_NODE, itemId);
+    if (!item) return;
 
-            if (itemType === 'folder') {
-                const newName = prompt('请输入新的文件夹名称:', item.name);
-                if (newName && newName.trim() !== '') {
-                    item.name = newName.trim();
-                    updateFileList();
-                }
-            } else {
-                const oldName = item.name;
-                const extIndex = oldName.lastIndexOf('.');
-                const nameWithoutExt = extIndex > -1 ? oldName.substring(0, extIndex) : oldName;
-                const ext = extIndex > -1 ? oldName.substring(extIndex) : '';
-                
-                const newName = prompt('请输入新的文件名称:', nameWithoutExt);
-                if (newName && newName.trim() !== '') {
-                    item.name = newName.trim() + ext;
-                    updateFileList();
-                }
-            }
-        });
-    });
-
-    document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const itemId = this.dataset.id;
-            const itemType = this.dataset.type;
-            const item = findNodeById(ROOT_NODE, itemId);
-            if (!item) return;
-
-            const confirmMsg = itemType === 'folder' 
-                ? `确定要删除文件夹 "${item.name}" 及其所有内容吗？`
-                : `确定要删除文件 "${item.name}" 吗？`;
-            
-            if (confirm(confirmMsg)) {
-                const parent = item.parent;
-                parent.children = parent.children.filter(child => child.id !== itemId);
+    if (target.classList.contains('enter-btn')) {
+        navigateToNode(item);
+    } else if (target.classList.contains('rename-btn')) {
+        if (item.type === 'folder') {
+            const newName = prompt('请输入新的文件夹名称:', item.name);
+            if (newName && newName.trim() !== '') {
+                item.name = newName.trim();
                 updateFileList();
             }
-        });
-    });
-}
+        } else {
+            const oldName = item.name;
+            const extIndex = oldName.lastIndexOf('.');
+            const nameWithoutExt = extIndex > -1 ? oldName.substring(0, extIndex) : oldName;
+            const ext = extIndex > -1 ? oldName.substring(extIndex) : '';
+            const newName = prompt('请输入新的文件名称:', nameWithoutExt);
+            if (newName && newName.trim() !== '') {
+                item.name = newName.trim() + ext;
+                updateFileList();
+            }
+        }
+    } else if (target.classList.contains('delete-btn')) {
+        const confirmMsg = item.type === 'folder' 
+            ? `确定要删除文件夹 "${item.name}" 及其所有内容吗？`
+            : `确定要删除文件 "${item.name}" 吗？`;
+        
+        if (confirm(confirmMsg)) {
+            const parent = item.parent;
+            parent.children = parent.children.filter(child => child.id !== itemId);
+            updateFileList();
+        }
+    }
+});
 
 window.addEventListener('beforeunload', function(e) {
     if (hasFiles) {

@@ -258,45 +258,72 @@ fileInput.addEventListener('change', function(e) {
         type: 'file',
         file: file,
         parent: currentNode,
-        depth: currentNode.depth + 1
-         };
-         currentNode.children.push(folderNode);
-         updateFileList();
-     }
- });
- exportZipBtn.addEventListener('click', async function() {
-     if (ROOT_NODE.children.length === 0) {
-         alert('暂无文件可压缩，请先导入文件或新建文件夹！');
-         return;
-     }
-     const zip = new JSZip();
-     function buildZipStructure(zip, node, path = '') {
-         const currentPath = path ? `${path}/${node.name}` : node.name;
-         if (node.type === 'folder' && node.children.length > 0) {
-             const folder = zip.folder(currentPath);
-             node.children.forEach(child => {
-                 buildZipStructure(folder || zip, child, currentPath);
-             });
-         } else if (node.type === 'file') {
-             zip.file(currentPath, node.file);
-         }
-     }
-     ROOT_NODE.children.forEach(item => {
-         buildZipStructure(zip, item);
-     });
-     try {
-         const content = await zip.generateAsync({ 
-             type: 'blob',
-             compression: 'DEFLATE',
-             compressionOptions: { level: 9 }
-         });
-         saveAs(content, '压缩文件.zip');
-     } catch (error) {
-         alert('压缩失败: ' + error.message);
-     }
- });
- updatePathBar();
- updateFileList();
- </script>
- </body>
- </html>
+        depth: currentNode.depth
+    }));
+    
+    currentNode.children = [...currentNode.children, ...newFiles];
+    updateFileList();
+    this.value = '';
+});
+
+newFolderBtn.addEventListener('click', function() {
+    if (currentNode.depth >= 3) {
+        alert('最多只能创建3层嵌套文件夹！');
+        return;
+    }
+
+    const folderName = prompt('请输入文件夹名称:', '新建文件夹');
+    if (folderName && folderName.trim() !== '') {
+        const folderNode = {
+            id: generateUniqueId(),
+            name: folderName.trim(),
+            type: 'folder',
+            children: [],
+            parent: currentNode,
+            depth: currentNode.depth + 1
+        };
+        currentNode.children.push(folderNode);
+        updateFileList();
+    }
+});
+
+exportZipBtn.addEventListener('click', async function() {
+    if (ROOT_NODE.children.length === 0) {
+        alert('暂无文件可压缩，请先导入文件或新建文件夹！');
+        return;
+    }
+
+    const zip = new JSZip();
+    function buildZipStructure(zip, node, path = '') {
+        const currentPath = path ? `${path}/${node.name}` : node.name;
+        if (node.type === 'folder' && node.children.length > 0) {
+            const folder = zip.folder(currentPath);
+            node.children.forEach(child => {
+                buildZipStructure(folder || zip, child, currentPath);
+            });
+        } else if (node.type === 'file') {
+            zip.file(currentPath, node.file);
+        }
+    }
+
+    ROOT_NODE.children.forEach(item => {
+        buildZipStructure(zip, item);
+    });
+
+    try {
+        const content = await zip.generateAsync({ 
+            type: 'blob',
+            compression: 'DEFLATE',
+            compressionOptions: { level: 9 }
+        });
+        saveAs(content, '压缩文件.zip');
+    } catch (error) {
+        alert('压缩失败: ' + error.message);
+    }
+});
+
+updatePathBar();
+updateFileList();
+</script>
+</body>
+</html>
